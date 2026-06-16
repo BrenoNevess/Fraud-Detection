@@ -1,11 +1,12 @@
-using FraudDetection.Web.Models.Enums;
-using FraudDetection.Web.Services;
+using FraudDetection.Api.Models;
+using FraudDetection.Api.Services;
 
 namespace TravaPix.Tests
 {
+    // Testa a lógica de análise de fraude onde ela vive: na API (FraudAnalyzer).
     public class FraudDetectionServiceTests
     {
-        private readonly FraudDetectionService _service = new();
+        private readonly FraudAnalyzer _analyzer = new();
 
         // Horário comercial (não atípico) para cenários controlados.
         private static DateTime AtHour(int hour) => new(2026, 6, 4, hour, 0, 0);
@@ -13,7 +14,7 @@ namespace TravaPix.Tests
         [Fact]
         public void Analyze_SmallAmountDuringDay_ReturnsSafeAndAllow()
         {
-            FraudAnalysisResult result = _service.Analyze(
+            FraudAnalysisOutcome result = _analyzer.Analyze(
                 amount: 100m,
                 when: AtHour(14),
                 transactionLocation: "Sao Paulo/SP",
@@ -28,7 +29,7 @@ namespace TravaPix.Tests
         [Fact]
         public void Analyze_AmountAboveNormalDuringDay_ReturnsSuspiciousAndRequiresConfirmation()
         {
-            FraudAnalysisResult result = _service.Analyze(
+            FraudAnalysisOutcome result = _analyzer.Analyze(
                 amount: 1500m,
                 when: AtHour(14),
                 transactionLocation: "Sao Paulo/SP",
@@ -48,7 +49,7 @@ namespace TravaPix.Tests
             string transactionLocation,
             string userLocation)
         {
-            FraudAnalysisResult result = _service.Analyze(
+            FraudAnalysisOutcome result = _analyzer.Analyze(
                 amount,
                 AtHour(hour),
                 transactionLocation,

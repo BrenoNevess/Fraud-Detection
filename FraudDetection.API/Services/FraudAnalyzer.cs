@@ -1,19 +1,18 @@
-using FraudDetection.Web.Models.Enums;
-using FraudDetection.Web.Services.Interfaces;
+using FraudDetection.Api.Models;
 
-namespace FraudDetection.Web.Services
+namespace FraudDetection.Api.Services
 {
     /// <summary>
     /// Regras de detecção de fraude por valor, horário e localização.
-    /// Decide entre permitir, exigir confirmação assinada ou bloquear.
+    /// Lógica pura (sem banco), exposta pela API e coberta por testes.
     /// O nível final é sempre o de maior severidade entre as regras acionadas.
     /// </summary>
-    public class FraudDetectionService : IFraudDetectionService
+    public class FraudAnalyzer
     {
         private const decimal HighRiskThreshold = 3000m;   // valor extremamente elevado
         private const decimal SuspiciousThreshold = 1000m; // valor acima do normal
 
-        public FraudAnalysisResult Analyze(
+        public FraudAnalysisOutcome Analyze(
             decimal amount,
             DateTime when,
             string? transactionLocation,
@@ -60,7 +59,7 @@ namespace FraudDetection.Web.Services
                     ? "Valor extremamente elevado."
                     : "Valor acima do normal em horário atípico e em localização diferente da cadastrada.";
 
-                return new FraudAnalysisResult(
+                return new FraudAnalysisOutcome(
                     FraudRiskLevel.HighRisk,
                     FraudDecision.Block,
                     alerts,
@@ -71,7 +70,7 @@ namespace FraudDetection.Web.Services
                 ? FraudDecision.Allow
                 : FraudDecision.RequireConfirmation;
 
-            return new FraudAnalysisResult(risk, decision, alerts, null);
+            return new FraudAnalysisOutcome(risk, decision, alerts, null);
         }
 
         private static bool IsDifferentLocation(string? transactionLocation, string? userLocation)

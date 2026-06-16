@@ -35,8 +35,19 @@ builder.Services
 
 builder.Services.AddAuthorization();
 
+// ---------- Consumo da API de análise de fraude ----------
+// O motor de fraude agora é uma API externa. Registramos um HttpClient tipado
+// que aponta para a URL configurada e implementa IFraudDetectionService.
+string fraudApiBaseUrl =
+    builder.Configuration["FraudApi:BaseUrl"]
+    ?? throw new InvalidOperationException("'FraudApi:BaseUrl' não configurada.");
+
+builder.Services.AddHttpClient<IFraudDetectionService, FraudApiClient>(client =>
+{
+    client.BaseAddress = new Uri(fraudApiBaseUrl);
+});
+
 // ---------- Serviços de domínio ----------
-builder.Services.AddScoped<IFraudDetectionService, FraudDetectionService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();

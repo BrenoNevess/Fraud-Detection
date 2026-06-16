@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TravaPix\FraudDetection.Web.csproj" />
+    <ProjectReference Include="..\FraudDetection.API\FraudDetection.API.csproj" />
   </ItemGroup>
 
 </Project>

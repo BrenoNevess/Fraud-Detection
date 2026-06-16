@@ -1,5 +1,6 @@
-namespace FraudDetection.API.Models
+namespace FraudDetection.Api.Models
 {
+    /// <summary>Nível de risco atribuído a uma transação.</summary>
     public enum FraudRiskLevel
     {
         Safe,

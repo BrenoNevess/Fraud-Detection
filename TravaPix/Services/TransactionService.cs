@@ -35,7 +35,7 @@ namespace FraudDetection.Web.Services
                 .Select(u => u.Location)
                 .FirstOrDefaultAsync();
 
-            return _fraudDetection.Analyze(amount, DateTime.Now, location, senderLocation);
+            return await _fraudDetection.AnalyzeAsync(amount, DateTime.Now, location, senderLocation);
         }
 
         public async Task<BlockedRecipient?> GetActiveBlockAsync(string receiverCpf)
